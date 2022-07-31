@@ -1,4 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import pre_save
 
 from users.models import User
 
@@ -25,7 +27,7 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         'Ingredient',
-        through='Ingredients_amount',
+        through='IngredientsAmount',
         through_fields=('recipe', 'ingredient'),
         verbose_name='ингредиенты',
     )
@@ -36,8 +38,10 @@ class Recipe(models.Model):
     cooking_time = models.IntegerField(
         'время приготовления в минутах',
     )
+    created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        ordering = ['-created',]
         verbose_name = 'рецепт'
         verbose_name_plural = 'рецепты'
 
@@ -102,9 +106,10 @@ class Ingredient(models.Model):
         return self.name
 
 
-class Ingredients_amount(models.Model):
+class IngredientsAmount(models.Model):
     recipe = models.ForeignKey(
         Recipe,
+        related_name="related_ingredients",
         on_delete=models.CASCADE
     )
     ingredient = models.ForeignKey(
@@ -118,6 +123,57 @@ class Ingredients_amount(models.Model):
     class Meta:
         verbose_name = 'Количественные связи'
         verbose_name_plural = 'Количественные связи'
+        unique_together = (
+            ('recipe', 'ingredient'),
+        )
 
     def __str__(self) -> str:
         return self.recipe.name
+
+
+class Favorites(models.Model):
+    user = models.ForeignKey(
+        User,
+        related_name='elector',
+        verbose_name='добавил в избранное',
+        on_delete=models.CASCADE,
+        help_text='добавил в избранное',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name='favorites',
+        verbose_name='понравился рецепт',
+        on_delete=models.CASCADE,
+        help_text='понравился рецепт',
+    )
+
+    class Meta:
+        verbose_name = 'избранный рецепт'
+        verbose_name_plural = 'избранные рецепты'
+        unique_together = (
+            ('user', 'recipe'),
+        )
+
+
+class ShopingCart(models.Model):
+    user = models.ForeignKey(
+        User,
+        related_name='costumer',
+        verbose_name='покупатель',
+        on_delete=models.CASCADE,
+        help_text='покупатель',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name='shoping_cart',
+        verbose_name='доавбленный в корзину рецепт',
+        on_delete=models.CASCADE,
+        help_text='доавбленный в корзину рецепт',
+    )
+
+    class Meta:
+        verbose_name = 'доавбленный в корзину рецепт'
+        verbose_name_plural = 'доавбленныу в корзину рецепты'
+        unique_together = (
+            ('user', 'recipe'),
+        )
