@@ -2,14 +2,14 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import pre_save
 
-from users.models import User
+from users.models import FoodgramUser
 
 
 class Recipe(models.Model):
     """Модель рецепта."""
 
     author = models.ForeignKey(
-        User,
+        FoodgramUser,
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='автор публикации',
@@ -89,11 +89,11 @@ class Ingredient(models.Model):
     """Модель ингридиента."""
 
     name = models.CharField(
-        'название',
+        'название ингредиента',
         max_length=200,
     )
     measurement_unit = models.CharField(
-        'единицы измерения',
+        'единица измерения',
         max_length=200,
     )
 
@@ -133,7 +133,7 @@ class IngredientsAmount(models.Model):
 
 class Favorites(models.Model):
     user = models.ForeignKey(
-        User,
+        FoodgramUser,
         related_name='elector',
         verbose_name='добавил в избранное',
         on_delete=models.CASCADE,
@@ -157,7 +157,7 @@ class Favorites(models.Model):
 
 class ShopingCart(models.Model):
     user = models.ForeignKey(
-        User,
+        FoodgramUser,
         related_name='costumer',
         verbose_name='покупатель',
         on_delete=models.CASCADE,

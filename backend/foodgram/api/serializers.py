@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ReadOnlyField
 
 from recipes.models import Tag, Ingredient, Recipe, IngredientsAmount, Favorites, ShopingCart
-from users.models import User
+from users.models import FoodgramUser
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = User
+        model = FoodgramUser
         fields = (
             'email',
             'id',

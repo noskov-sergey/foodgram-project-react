@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .models import User, Subscribe
+from .models import FoodgramUser, Subscribe
 
-class UserAdmin(admin.ModelAdmin):
+class FoodgramUserAdmin(admin.ModelAdmin):
     list_display = (
         'username',
         'password',
@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
     )
     search_fields = ['username']
 
-admin.site.register(User, UserAdmin)
+admin.site.register(FoodgramUser, FoodgramUserAdmin)
 
 class SubscribeAdmin(admin.ModelAdmin):
     list_display = (

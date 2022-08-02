@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 ]
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.FoodgramUser'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -103,6 +103,19 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
 		'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
 		'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+DJOSER = {
+    'PERMISSIONS': {
+        'user_list': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
+        'user': ['rest_framework.permissions.AllowAny'],
+    },
+    'SERIALIZERS': {
+        'user': 'users.serializers.FoodgramUserSerializer',
+        'current_user': 'users.serializers.FoodgramUserSerializer',
+        'user_create': 'users.serializers.FoodgramUserCreateSerializer',
+    },
+    'HIDE_USERS': False,
 }
 
 LANGUAGE_CODE = 'en-us'

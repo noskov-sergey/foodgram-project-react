@@ -1,10 +1,25 @@
+from djoser.views import UserViewSet
 from rest_framework import filters, viewsets
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
+from .models import FoodgramUser
+from .serializers import FoodgramUserSerializer
+from api.pagination import ApiPagination
 
-from .models import User
-from .serializers import UserSerializer
+class FoodgramUserViewSet(UserViewSet):
+    paginationclass = ApiPagination
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    @action(
+        detail=False,
+        methods=['GET'],
+        permission_classes=(IsAuthenticated, )
+    )
+    def users(self, request):
+        serializer = FoodgramUserSerializer(
+            super().get_queryset(), many=True, context={
+                'request': request
+            }
+        )
+        return self.get_paginated_response(serializer.data)
