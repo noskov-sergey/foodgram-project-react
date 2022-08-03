@@ -19,4 +19,4 @@ class SubscribeAdmin(admin.ModelAdmin):
         'user',
         'author',
     )
-admin.register(Subscribe, SubscribeAdmin)
+admin.site.register(Subscribe, SubscribeAdmin)

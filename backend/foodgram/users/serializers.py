@@ -8,6 +8,7 @@ from .models import FoodgramUser, Subscribe
 class FoodgramUserSerializer(UserSerializer):
     """Сериализатор пользователя, модели User."""
     is_subscribed = serializers.SerializerMethodField(read_only=True)
+    
 
     class Meta:
         model = FoodgramUser
@@ -35,8 +36,19 @@ class FoodgramUserCreateSerializer(UserCreateSerializer):
         model = FoodgramUser
         fields = (
             'email',
+            'id',
             'username',
             'first_name',
             'last_name',
             'password'
+        )
+
+
+class FollowListSerializer(serializers.ModelSerializer):
+    """ Сериализация списка на кого подписан пользователь"""
+
+    class Meta:
+        model = FoodgramUser
+        fields = (
+            'email', 'id', 'username', 'first_name', 'last_name',
         )
