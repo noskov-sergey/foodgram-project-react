@@ -1,12 +1,14 @@
 from djoser.views import UserViewSet
 from rest_framework import filters, viewsets
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import FoodgramUser
-from .serializers import FoodgramUserSerializer, FollowListSerializer
+from .models import FoodgramUser, Subscribe
+from .serializers import FoodgramUserSerializer, FollowListSerializer, FollowSerializer
 from api.pagination import UsersApiPagination
 
 class FoodgramUserViewSet(UserViewSet):
@@ -57,3 +59,28 @@ class FoodgramUserViewSet(UserViewSet):
             context={'request': request},
         )
         return self.get_paginated_response(serializer.data)
+
+    @action(
+        detail=True,
+        methods=['POST', 'DELETE'],
+        permission_classes=(IsAuthenticated,)
+    )
+    def subscribe(self, request, id):
+        if request.method != 'POST':
+            subscription = get_object_or_404(
+                Subscribe,
+                following=get_object_or_404(FoodgramUser, id=id),
+                user=request.user
+            )
+            self.perform_destroy(subscription)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = FollowSerializer(
+            data={
+                'user': request.user.id,
+                'following': get_object_or_404(FoodgramUser, id=id).id
+            },
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

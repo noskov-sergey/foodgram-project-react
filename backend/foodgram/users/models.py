@@ -47,7 +47,7 @@ class Subscribe(models.Model):
         on_delete=models.CASCADE,
         help_text='подписчик',
     )
-    author = models.ForeignKey(
+    following = models.ForeignKey(
         FoodgramUser,
         related_name='following',
         verbose_name='Отслеживаемый автор',
@@ -57,9 +57,13 @@ class Subscribe(models.Model):
     class Meta:
         verbose_name = 'подписка на автора'
         verbose_name_plural = 'подписки на авторов'
-        unique_together = (
-            ('user', 'author'),
+        constraints = (
+            models.UniqueConstraint(
+                fields=['user', 'following'],
+                name='follow'
+            ),
         )
+
     
     def __str__(self):
-        return f'{self.user} follows {self.author}'
+        return f'{self.user} follows {self.following}'

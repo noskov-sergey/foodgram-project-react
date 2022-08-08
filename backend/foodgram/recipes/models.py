@@ -5,13 +5,35 @@ from django.db.models.signals import pre_save
 from users.models import FoodgramUser
 
 
+class Ingredient(models.Model):
+    """Модель ингридиента."""
+
+    name = models.CharField(
+        'название ингредиента',
+        db_index=True,
+        max_length=200,
+    )
+    measurement_unit = models.CharField(
+        'единица измерения',
+        max_length=200,
+    )
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'ингридиент'
+        verbose_name_plural = 'ингридиенты'
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Recipe(models.Model):
     """Модель рецепта."""
 
     author = models.ForeignKey(
         FoodgramUser,
         on_delete=models.CASCADE,
-        related_name='recipes',
+        related_name='author',
         verbose_name='автор публикации',
     )
     name = models.CharField(
@@ -20,15 +42,16 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         'картинка',
-        upload_to='recipes/images/',
+        upload_to='recipes/',
     )
     text = models.TextField(
         'описание',
     )
     ingredients = models.ManyToManyField(
-        'Ingredient',
-        through='IngredientsAmount',
+        Ingredient,
+        through='Ingredients_Amount',
         through_fields=('recipe', 'ingredient'),
+        related_name='ingredients',
         verbose_name='ингредиенты',
     )
     tags = models.ManyToManyField(
@@ -85,31 +108,9 @@ class Tag(models.Model):
         return self.name
 
 
-class Ingredient(models.Model):
-    """Модель ингридиента."""
-
-    name = models.CharField(
-        'название ингредиента',
-        max_length=200,
-    )
-    measurement_unit = models.CharField(
-        'единица измерения',
-        max_length=200,
-    )
-
-    class Meta:
-        ordering = ['name']
-        verbose_name = 'ингридиент'
-        verbose_name_plural = 'ингридиенты'
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class IngredientsAmount(models.Model):
+class Ingredients_Amount(models.Model):
     recipe = models.ForeignKey(
         Recipe,
-        related_name="related_ingredients",
         on_delete=models.CASCADE
     )
     ingredient = models.ForeignKey(
@@ -123,25 +124,28 @@ class IngredientsAmount(models.Model):
     class Meta:
         verbose_name = 'Количественные связи'
         verbose_name_plural = 'Количественные связи'
-        unique_together = (
-            ('recipe', 'ingredient'),
+        constraints = (
+            models.UniqueConstraint(
+                fields=['ingredient', 'recipe'],
+                name='unique_ingredient'
+            ),
         )
-
-    def __str__(self) -> str:
-        return self.recipe.name
+    
+    def __str__(self):
+        return f'{self.ingredient} in {self.recipe}'
 
 
 class Favorites(models.Model):
     user = models.ForeignKey(
         FoodgramUser,
-        related_name='elector',
+        related_name='favorited',
         verbose_name='добавил в избранное',
         on_delete=models.CASCADE,
         help_text='добавил в избранное',
     )
     recipe = models.ForeignKey(
         Recipe,
-        related_name='favorites',
+        related_name='favorited',
         verbose_name='понравился рецепт',
         on_delete=models.CASCADE,
         help_text='понравился рецепт',
@@ -150,22 +154,25 @@ class Favorites(models.Model):
     class Meta:
         verbose_name = 'избранный рецепт'
         verbose_name_plural = 'избранные рецепты'
-        unique_together = (
-            ('user', 'recipe'),
+        constraints = (
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='favoritesRecipe'
+            ),
         )
 
 
-class ShopingCart(models.Model):
+class ShoppingCart(models.Model):
     user = models.ForeignKey(
         FoodgramUser,
-        related_name='costumer',
+        related_name='shopping_cart',
         verbose_name='покупатель',
         on_delete=models.CASCADE,
         help_text='покупатель',
     )
     recipe = models.ForeignKey(
         Recipe,
-        related_name='shoping_cart',
+        related_name='shopping_cart',
         verbose_name='доавбленный в корзину рецепт',
         on_delete=models.CASCADE,
         help_text='доавбленный в корзину рецепт',
@@ -174,6 +181,9 @@ class ShopingCart(models.Model):
     class Meta:
         verbose_name = 'доавбленный в корзину рецепт'
         verbose_name_plural = 'доавбленныу в корзину рецепты'
-        unique_together = (
-            ('user', 'recipe'),
+        constraints = (
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='shoppingart'
+            ),
         )

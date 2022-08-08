@@ -17,6 +17,6 @@ admin.site.register(FoodgramUser, FoodgramUserAdmin)
 class SubscribeAdmin(admin.ModelAdmin):
     list_display = (
         'user',
-        'author',
+        'following',
     )
 admin.site.register(Subscribe, SubscribeAdmin)
