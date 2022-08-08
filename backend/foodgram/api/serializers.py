@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.serializers import ReadOnlyField
+from rest_framework.exceptions import ValidationError
 from .convertors import Base64ImageField
 
 from recipes.models import (Tag, Ingredient, Recipe,
@@ -96,14 +96,13 @@ class GetRecipeSerializer(serializers.ModelSerializer):
         return data
 
 
-class IngredientForPostSerializer(serializers.ModelSerializer):
+class IngredientForPostSerializer(serializers.Serializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField(min_value=1)
-
+    amount = serializers.IntegerField()
 
     class Meta:
         model = Ingredients_Amount
-        fields = ('id', 'amount')
+        fields = ( 'id', 'amount' )
 
 
 class RecipePostSerializer(serializers.ModelSerializer):
@@ -118,15 +117,45 @@ class RecipePostSerializer(serializers.ModelSerializer):
                   'image', 'name', 'text', 'cooking_time')
 
     @staticmethod
-    def create_ingredients_tags(recipe, ingredients, tags):
+    def create_ingredients(recipe, ingredients):
         for ingredient in ingredients:
             Ingredients_Amount.objects.create(
                 recipe=recipe,
                 ingredient=ingredient['id'],
-                amount=ingredient['amount']
+                amount=ingredient['amount'],
             )
+
+    @staticmethod
+    def create_tags(recipe, tags):
         for tag in tags:
             recipe.tags.add(tag)
+
+    def validate(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        ingredients_list = []
+        tags = self.initial_data.get('tags')
+        tags_list = []
+        if not ingredients:
+            raise ValidationError('Не выбраны ингредиенты')
+        for ingredient in ingredients:
+            if int(ingredient['amount']) <= 0:
+                raise ValidationError(
+                    f'{ingredient} указано не допустимое кол-во ингредиентов :'
+                    f'{ingredient["amount"]}'
+                )
+            if ingredient['id'] in ingredients_list:
+                raise serializers.ValidationError(
+                    'Ингредиенты не должны повторяться'
+                )
+            ingredients_list.append(ingredient['id'])
+        for tag in tags:
+            if tag in tags_list:
+                raise serializers.ValidationError(
+                    'Теги не должны повторяться'
+                )
+            tags_list.append(tag)
+        return data
+    
     
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
@@ -135,7 +164,8 @@ class RecipePostSerializer(serializers.ModelSerializer):
             author=self.context.get('request').user,
             **validated_data
         )
-        self.create_ingredients_tags(recipe, ingredients, tags)
+        self.create_tags(recipe, tags)
+        self.create_ingredients(recipe, ingredients)
         return recipe
     
     def update(self, recipe, validated_data):
@@ -143,20 +173,9 @@ class RecipePostSerializer(serializers.ModelSerializer):
         Ingredients_Amount.objects.filter(recipe=recipe).delete()
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        self.create_ingredients_tags(recipe, ingredients, tags)
+        self.create_tags(recipe, tags)
+        self.create_ingredients(recipe, ingredients)
         return super().update(recipe, validated_data)
-    
-    def validate(self, data):
-        ingredients = self.initial_data.get('ingredients')
-        ingredients_list = []
-        for ingredient in ingredients:
-            ingredient_id = ingredient['id']
-            if ingredient_id in ingredients_list:
-                raise serializers.ValidationError({
-                    'ingredient': 'Ингредиенты не должны повторяться.'
-                })
-            ingredients_list.append(ingredient_id)
-        return data
 
     def to_representation(self, obj):
         data = super().to_representation(obj)

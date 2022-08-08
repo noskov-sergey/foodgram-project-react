@@ -50,7 +50,6 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='Ingredients_Amount',
-        through_fields=('recipe', 'ingredient'),
         related_name='ingredients',
         verbose_name='ингредиенты',
     )
@@ -109,6 +108,8 @@ class Tag(models.Model):
 
 
 class Ingredients_Amount(models.Model):
+    """Допольнительная модель для учета количества ингидиентов."""
+
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE
@@ -117,7 +118,7 @@ class Ingredients_Amount(models.Model):
         Ingredient,
         on_delete=models.CASCADE
     )
-    amount = models.IntegerField(
+    amount = models.PositiveSmallIntegerField(
         'количество',
     )
 
@@ -136,6 +137,8 @@ class Ingredients_Amount(models.Model):
 
 
 class Favorites(models.Model):
+    """Модель добавленных в избранное рецептов."""
+
     user = models.ForeignKey(
         FoodgramUser,
         related_name='favorited',
@@ -163,12 +166,14 @@ class Favorites(models.Model):
 
 
 class ShoppingCart(models.Model):
+    """Модель добавленных в лист покупок рецептов."""
+
     user = models.ForeignKey(
         FoodgramUser,
         related_name='shopping_cart',
-        verbose_name='покупатель',
+        verbose_name='пользователь',
         on_delete=models.CASCADE,
-        help_text='покупатель',
+        help_text='пользователь',
     )
     recipe = models.ForeignKey(
         Recipe,
@@ -179,8 +184,8 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
-        verbose_name = 'доавбленный в корзину рецепт'
-        verbose_name_plural = 'доавбленныу в корзину рецепты'
+        verbose_name = 'добавбленный в корзину рецепт'
+        verbose_name_plural = 'добавбленные в корзину рецепты'
         constraints = (
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
