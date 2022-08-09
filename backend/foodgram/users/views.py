@@ -1,14 +1,13 @@
 from djoser.views import UserViewSet
-from rest_framework import filters, viewsets
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
 
 from .models import FoodgramUser, Subscribe
-from .serializers import FoodgramUserSerializer, FollowListSerializer, FollowSerializer
+from .serializers import (FollowListSerializer, FollowSerializer,
+                          FoodgramUserSerializer)
 from api.pagination import UsersApiPagination
 
 class FoodgramUserViewSet(UserViewSet):

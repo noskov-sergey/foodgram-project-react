@@ -1,6 +1,4 @@
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import pre_save
 
 from users.models import FoodgramUser
 
@@ -10,7 +8,6 @@ class Ingredient(models.Model):
 
     name = models.CharField(
         'название ингредиента',
-        db_index=True,
         max_length=200,
     )
     measurement_unit = models.CharField(
@@ -108,7 +105,7 @@ class Tag(models.Model):
 
 
 class Ingredients_Amount(models.Model):
-    """Допольнительная модель для учета количества ингидиентов."""
+    """Промежуточная модель для учета количества ингидиентов."""
 
     recipe = models.ForeignKey(
         Recipe,

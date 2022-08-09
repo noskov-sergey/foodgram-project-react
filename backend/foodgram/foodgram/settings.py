@@ -1,12 +1,10 @@
 import os
-from datetime import timedelta
-from pathlib import Path
 
 from decouple import Csv, config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = '8!y5il(e+3vpqi&1d-^=0tq^$@b#*k=0iz*-!2n=^w=d2o5ewj'
+SECRET_KEY = config('SECRET_KEY', default='1')
 
 DEBUG = True
 

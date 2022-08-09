@@ -1,6 +1,5 @@
-from djoser.serializers import UserSerializer, UserCreateSerializer
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
-from rest_framework.serializers import ReadOnlyField
 from rest_framework.generics import get_object_or_404
 
 from .models import FoodgramUser, Subscribe
@@ -9,9 +8,9 @@ from recipes.models import  Recipe
 
 class FoodgramUserSerializer(UserSerializer):
     """Сериализатор пользователя, модели FoodgramUser."""
+
     is_subscribed = serializers.SerializerMethodField(read_only=True)
     
-
     class Meta:
         model = FoodgramUser
         fields = (
@@ -48,6 +47,7 @@ class FoodgramUserCreateSerializer(UserCreateSerializer):
 
 class FollowListSerializer(serializers.ModelSerializer):
     """Сериализация списка на кого подписан пользователь"""
+
     is_subscribed = serializers.SerializerMethodField(read_only=True)
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()

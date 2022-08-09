@@ -3,6 +3,8 @@ from django.db import models
 
 
 class FoodgramUser(AbstractUser):
+    """Кастомная модель пользователя."""
+
     username = models.CharField(
         'логин',
         unique=True,
@@ -64,6 +66,6 @@ class Subscribe(models.Model):
             ),
         )
 
-    
+
     def __str__(self):
         return f'{self.user} follows {self.following}'

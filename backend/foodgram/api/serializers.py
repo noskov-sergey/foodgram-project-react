@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from .convertors import Base64ImageField
 
+from .convertors import Base64ImageField
 from recipes.models import (Tag, Ingredient, Recipe,
                             Ingredients_Amount, Favorites,
                             ShoppingCart)
@@ -17,7 +17,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    """Сериализатор тэгов, модели Tag."""
+    """Сериализатор тэгов, модели Ingredient."""
 
     class Meta:
         model = Ingredient
@@ -25,6 +25,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientDetailSerializer(serializers.HyperlinkedModelSerializer):
+    """Сериализатор промежуточной модели Ingredients_Amount"""
     name = serializers.CharField(source='ingredient.name', read_only=True)
     measurement_unit = serializers.CharField(
         source='ingredient.measurement_unit', read_only=True
@@ -106,6 +107,8 @@ class IngredientForPostSerializer(serializers.Serializer):
 
 
 class RecipePostSerializer(serializers.ModelSerializer):
+    """Сериализатор при создании рецепта, модели Recipe."""
+
     author = FoodgramUserSerializer(read_only=True)
     ingredients = IngredientForPostSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
@@ -148,12 +151,14 @@ class RecipePostSerializer(serializers.ModelSerializer):
                     'Ингредиенты не должны повторяться'
                 )
             ingredients_list.append(ingredient['id'])
+            print(ingredients_list)
         for tag in tags:
             if tag in tags_list:
                 raise serializers.ValidationError(
                     'Теги не должны повторяться'
                 )
             tags_list.append(tag)
+        print(data)
         return data
     
     
@@ -172,6 +177,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
         recipe.tags.clear()
         Ingredients_Amount.objects.filter(recipe=recipe).delete()
         ingredients = validated_data.pop('ingredients')
+        print(ingredients)
         tags = validated_data.pop('tags')
         self.create_tags(recipe, tags)
         self.create_ingredients(recipe, ingredients)
@@ -184,6 +190,8 @@ class RecipePostSerializer(serializers.ModelSerializer):
     
 
 class FavoritesSerializer(serializers.ModelSerializer):
+    """Сериализатор избранных рецептов, модели Favorites."""
+
     class Meta:
         model = Favorites
         fields = ('user', 'recipe')
@@ -203,12 +211,14 @@ class FavoritesSerializer(serializers.ModelSerializer):
         ).data
 
 class FavoritesViewSerilizer(serializers.ModelSerializer):
+    """Сериализатор подписки."""
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
+    """Сериализатор рецептов в корзине, модели ShoppingCart."""
     class Meta:
         model = ShoppingCart
         fields = ('user', 'recipe')

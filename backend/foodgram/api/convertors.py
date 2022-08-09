@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from rest_framework.serializers import ImageField
 from six import string_types
 
-WRONG_IMAGE_TYPE = "Кривой формат файла картинки"
+WRONG_IMAGE_TYPE = "Неверный формат файла картинки"
 BASE64 = ";base64,"
 
 

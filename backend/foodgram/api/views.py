@@ -1,7 +1,7 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets, status
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -10,11 +10,12 @@ from rest_framework.response import Response
 from .filters import RecipeFilter
 from .pagination import UsersApiPagination
 from .permissions import OwnerOrAdminOrSafeMethods
-from .serializers import (FavoritesSerializer, TagSerializer,
-                        IngredientSerializer, GetRecipeSerializer,
-                        RecipePostSerializer, ShoppingCartSerializer)
-from recipes.models import (Tag, Ingredient, Recipe, Favorites,
-                            ShoppingCart, Ingredients_Amount)
+from .serializers import (FavoritesSerializer, GetRecipeSerializer,
+                          IngredientSerializer, RecipePostSerializer,
+                          ShoppingCartSerializer, TagSerializer)
+from recipes.models import (Favorites, Ingredient, Ingredients_Amount,
+                            Recipe, ShoppingCart, Tag)
+
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
