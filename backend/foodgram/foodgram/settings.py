@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     'django_filters',
     'djoser',
     'rest_framework.authtoken',
-    'foodgram'
+    'foodgram',
+    'colorfield',
 ]
 
 AUTH_USER_MODEL = 'users.FoodgramUser'
@@ -114,7 +115,7 @@ DJOSER = {
     'HIDE_USERS': False,
 }
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -124,8 +125,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+DOCS_DIR = os.path.join(BASE_DIR, 'api/docs/')
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/mediafiles/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')

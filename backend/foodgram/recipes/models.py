@@ -1,4 +1,5 @@
 from django.db import models
+from colorfield.fields import ColorField
 
 from users.models import FoodgramUser
 
@@ -16,7 +17,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name',)
         verbose_name = 'ингридиент'
         verbose_name_plural = 'ингридиенты'
 
@@ -60,7 +61,7 @@ class Recipe(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created',]
+        ordering = ('-created',)
         verbose_name = 'рецепт'
         verbose_name_plural = 'рецепты'
 
@@ -82,11 +83,11 @@ class Tag(models.Model):
         max_length=200,
         unique=True,
     )
-    color = models.CharField(
+    color = ColorField(
         'цветовой HEX-код',
+        default='#FF0000',
         max_length=7,
         unique=True,
-        null=True,
     )
     slug = models.SlugField(
         'уникальный слаг',
@@ -96,7 +97,7 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ('id',)
         verbose_name = 'тэг'
         verbose_name_plural = 'тэги'
 
@@ -124,7 +125,7 @@ class Ingredients_Amount(models.Model):
         verbose_name_plural = 'Количественные связи'
         constraints = (
             models.UniqueConstraint(
-                fields=['ingredient', 'recipe'],
+                fields=('ingredient', 'recipe'),
                 name='unique_ingredient'
             ),
         )
@@ -156,7 +157,7 @@ class Favorites(models.Model):
         verbose_name_plural = 'избранные рецепты'
         constraints = (
             models.UniqueConstraint(
-                fields=['user', 'recipe'],
+                fields=('user', 'recipe'),
                 name='favoritesRecipe'
             ),
         )
@@ -185,7 +186,7 @@ class ShoppingCart(models.Model):
         verbose_name_plural = 'добавбленные в корзину рецепты'
         constraints = (
             models.UniqueConstraint(
-                fields=['user', 'recipe'],
+                fields=('user', 'recipe'),
                 name='shoppingart'
             ),
         )

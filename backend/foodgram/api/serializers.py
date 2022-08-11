@@ -2,9 +2,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from .convertors import Base64ImageField
-from recipes.models import (Tag, Ingredient, Recipe,
-                            Ingredients_Amount, Favorites,
-                            ShoppingCart)
+from recipes.models import (Tag, Ingredient, Ingredients_Amount,
+                            Recipe, Favorites, ShoppingCart)
 from users.serializers import FoodgramUserSerializer
 
 
@@ -93,13 +92,13 @@ class GetRecipeSerializer(serializers.ModelSerializer):
         
     def to_representation(self, obj):
         data = super().to_representation(obj)
-        data["image"] = obj.image.url
+        data['image'] = obj.image.url
         return data
 
 
 class IngredientForPostSerializer(serializers.Serializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Ingredients_Amount
@@ -109,15 +108,20 @@ class IngredientForPostSerializer(serializers.Serializer):
 class RecipePostSerializer(serializers.ModelSerializer):
     """Сериализатор при создании рецепта, модели Recipe."""
 
-    author = FoodgramUserSerializer(read_only=True)
     ingredients = IngredientForPostSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     image = Base64ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'author', 'ingredients', 'tags',
-                  'image', 'name', 'text', 'cooking_time')
+        fields = (
+            'ingredients',
+            'tags',
+            'image',
+            'name',
+            'text',
+            'cooking_time'
+        )
 
     @staticmethod
     def create_ingredients(recipe, ingredients):
@@ -127,6 +131,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
                 ingredient=ingredient['id'],
                 amount=ingredient['amount'],
             )
+
 
     @staticmethod
     def create_tags(recipe, tags):
@@ -144,21 +149,18 @@ class RecipePostSerializer(serializers.ModelSerializer):
             if int(ingredient['amount']) <= 0:
                 raise ValidationError(
                     f'{ingredient} указано не допустимое кол-во ингредиентов :'
-                    f'{ingredient["amount"]}'
-                )
+                    )
             if ingredient['id'] in ingredients_list:
                 raise serializers.ValidationError(
                     'Ингредиенты не должны повторяться'
                 )
             ingredients_list.append(ingredient['id'])
-            print(ingredients_list)
         for tag in tags:
             if tag in tags_list:
                 raise serializers.ValidationError(
                     'Теги не должны повторяться'
                 )
             tags_list.append(tag)
-        print(data)
         return data
     
     
@@ -177,7 +179,6 @@ class RecipePostSerializer(serializers.ModelSerializer):
         recipe.tags.clear()
         Ingredients_Amount.objects.filter(recipe=recipe).delete()
         ingredients = validated_data.pop('ingredients')
-        print(ingredients)
         tags = validated_data.pop('tags')
         self.create_tags(recipe, tags)
         self.create_ingredients(recipe, ingredients)
@@ -185,7 +186,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         data = super().to_representation(obj)
-        data["image"] = obj.image.url
+        data['image'] = obj.image.url
         return data
     
 
