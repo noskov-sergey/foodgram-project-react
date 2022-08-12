@@ -36,7 +36,6 @@ class FoodgramUser(AbstractUser):
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
 
-
     def __str__(self):
         return self.username
 
@@ -65,7 +64,6 @@ class Subscribe(models.Model):
                 name='follow'
             ),
         )
-
 
     def __str__(self):
         return f'{self.user} follows {self.following}'

@@ -10,6 +10,7 @@ from .serializers import (FollowListSerializer, FollowSerializer,
                           FoodgramUserSerializer)
 from api.pagination import UsersApiPagination
 
+
 class FoodgramUserViewSet(UserViewSet):
     pagination_class = UsersApiPagination
 
@@ -25,7 +26,7 @@ class FoodgramUserViewSet(UserViewSet):
             }
         )
         return self.get_paginated_response(serializer.data)
-    
+
     @action(
         detail=False,
         methods=['GET'],
@@ -41,7 +42,6 @@ class FoodgramUserViewSet(UserViewSet):
             context={'request': request},
         )
         return self.get_paginated_response(serializer.data)
-
 
     @action(
         detail=True,

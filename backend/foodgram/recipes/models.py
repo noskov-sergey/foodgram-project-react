@@ -69,10 +69,12 @@ class Recipe(models.Model):
         return self.name
 
     def get_ingredients(self):
-        return ", ".join([str(ingredient) for ingredient in self.ingredients.all()])
-    
+        return ', '.join(
+            [str(ingredient) for ingredient in self.ingredients.all()]
+        )
+
     def get_tags(self):
-        return ", ".join([str(tag) for tag in self.tags.all()])
+        return ', '.join([str(tag) for tag in self.tags.all()])
 
 
 class Tag(models.Model):
@@ -129,7 +131,7 @@ class Ingredients_Amount(models.Model):
                 name='unique_ingredient'
             ),
         )
-    
+
     def __str__(self):
         return f'{self.ingredient} in {self.recipe}'
 

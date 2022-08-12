@@ -36,7 +36,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     pagination_class = UsersApiPagination
 
-
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return GetRecipeSerializer

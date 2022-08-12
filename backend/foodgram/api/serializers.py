@@ -89,7 +89,7 @@ class GetRecipeSerializer(serializers.ModelSerializer):
             Ingredients_Amount.objects.filter(recipe=recipe),
             many=True
         ).data
-        
+
     def to_representation(self, obj):
         data = super().to_representation(obj)
         data['image'] = obj.image.url
@@ -102,14 +102,17 @@ class IngredientForPostSerializer(serializers.Serializer):
 
     class Meta:
         model = Ingredients_Amount
-        fields = ( 'id', 'amount' )
+        fields = ('id', 'amount')
 
 
 class RecipePostSerializer(serializers.ModelSerializer):
     """Сериализатор при создании рецепта, модели Recipe."""
 
     ingredients = IngredientForPostSerializer(many=True)
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True
+    )
     image = Base64ImageField()
 
     class Meta:
@@ -130,7 +133,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
                 recipe=recipe,
                 ingredient=ingredient['id'],
                 amount=ingredient['amount'],
-            )
+        )
 
 
     @staticmethod
@@ -149,7 +152,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
             if int(ingredient['amount']) <= 0:
                 raise ValidationError(
                     f'{ingredient} указано не допустимое кол-во ингредиентов :'
-                    )
+                )
             if ingredient['id'] in ingredients_list:
                 raise serializers.ValidationError(
                     'Ингредиенты не должны повторяться'
@@ -162,8 +165,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
                 )
             tags_list.append(tag)
         return data
-    
-    
+
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
@@ -202,7 +204,9 @@ class FavoritesSerializer(serializers.ModelSerializer):
                 user=self.context['request'].user,
                 recipe=data['recipe']
         ):
-            raise serializers.ValidationError('Вы уже добавили этот рецепт в избранное.')
+            raise serializers.ValidationError(
+                'Вы уже добавили этот рецепт в избранное.'
+            )
         return data
 
     def to_representation(self, instance):
@@ -211,12 +215,14 @@ class FavoritesSerializer(serializers.ModelSerializer):
             context={'request': self.context.get('request')}
         ).data
 
+
 class FavoritesViewSerilizer(serializers.ModelSerializer):
     """Сериализатор подписки."""
 
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
+
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     """Сериализатор рецептов в корзине, модели ShoppingCart."""
@@ -229,7 +235,9 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
                 user=self.context['request'].user,
                 recipe=data['recipe']
         ):
-            raise serializers.ValidationError('Вы уже добавили этот рецепт в список покупок.')
+            raise serializers.ValidationError(
+                'Вы уже добавили этот рецепт в список покупок.'
+            )
         return data
 
     def to_representation(self, instance):

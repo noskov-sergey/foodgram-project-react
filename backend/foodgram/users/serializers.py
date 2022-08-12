@@ -3,14 +3,14 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from .models import FoodgramUser, Subscribe
-from recipes.models import  Recipe
+from recipes.models import Recipe
 
 
 class FoodgramUserSerializer(UserSerializer):
     """Сериализатор пользователя, модели FoodgramUser."""
 
     is_subscribed = serializers.SerializerMethodField(read_only=True)
-    
+
     class Meta:
         model = FoodgramUser
         fields = (
@@ -21,7 +21,7 @@ class FoodgramUserSerializer(UserSerializer):
             'last_name',
             'is_subscribed'
         )
-    
+
     def get_is_subscribed(self, following):
         if self.context.get('request',).user.is_anonymous:
             return False
@@ -64,7 +64,7 @@ class FollowListSerializer(serializers.ModelSerializer):
             'recipes',
             'recipes_count'
         )
-    
+
     def get_is_subscribed(self, following):
         if self.context.get('request',).user.is_anonymous:
             return False
@@ -72,7 +72,7 @@ class FollowListSerializer(serializers.ModelSerializer):
             user=self.context.get('request').user,
             following=following
         ).exists()
-    
+
     def get_recipes(self, following):
         queryset = self.context.get('request')
         recipes_limit = queryset.query_params.get('recipes_limit')
@@ -91,8 +91,8 @@ class FollowListSerializer(serializers.ModelSerializer):
 
 
 class RecipeFollowingSerializer(serializers.ModelSerializer):
-    """Сериализация списка рецептов авторов, на которых подписан пользователь"""
-    
+    """Сериализация списка рецептов, на которых подписан пользователь"""
+
     class Meta:
         model = Recipe
         fields = (
@@ -112,12 +112,16 @@ class FollowSerializer(serializers.ModelSerializer):
     def validate(self, data):
         get_object_or_404(FoodgramUser, username=data['following'])
         if self.context['request'].user == data['following']:
-            raise serializers.ValidationError('Нельзя подписываться на самого себя!')
+            raise serializers.ValidationError(
+                'Нельзя подписываться на самого себя!'
+            )
         if Subscribe.objects.filter(
                 user=self.context['request'].user,
                 following=data['following']
         ):
-            raise serializers.ValidationError('Вы уже подписаны на этого пользователя.')
+            raise serializers.ValidationError(
+                'Вы уже подписаны на этого пользователя.'
+            )
         return data
 
     def to_representation(self, instance):

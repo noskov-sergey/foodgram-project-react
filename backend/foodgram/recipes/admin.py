@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import (Favorites, Ingredient,Ingredients_Amount,
+from .models import (Favorites, Ingredient, Ingredients_Amount,
                      Recipe, ShoppingCart, Tag)
 
-
 NO_DATA = '-нет данных-'
+
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
