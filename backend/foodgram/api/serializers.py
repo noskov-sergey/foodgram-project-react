@@ -133,8 +133,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
                 recipe=recipe,
                 ingredient=ingredient['id'],
                 amount=ingredient['amount'],
-        )
-
+            )
 
     @staticmethod
     def create_tags(recipe, tags):
@@ -176,7 +175,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
         self.create_tags(recipe, tags)
         self.create_ingredients(recipe, ingredients)
         return recipe
-    
+
     def update(self, recipe, validated_data):
         recipe.tags.clear()
         Ingredients_Amount.objects.filter(recipe=recipe).delete()
@@ -190,7 +189,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
         data = super().to_representation(obj)
         data['image'] = obj.image.url
         return data
-    
+
 
 class FavoritesSerializer(serializers.ModelSerializer):
     """Сериализатор избранных рецептов, модели Favorites."""

@@ -12,6 +12,8 @@ class FoodgramUserAdmin(admin.ModelAdmin):
         'last_name',
     )
     search_fields = ['username']
+
+
 admin.site.register(FoodgramUser, FoodgramUserAdmin)
 
 
@@ -20,4 +22,6 @@ class SubscribeAdmin(admin.ModelAdmin):
         'user',
         'following',
     )
+
+
 admin.site.register(Subscribe, SubscribeAdmin)
