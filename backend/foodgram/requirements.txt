@@ -9,8 +9,8 @@ defusedxml==0.7.1
 Django==2.2.16
 django-autoslug==1.9.8
 django-colorfield==0.7.2
-django-extra-fields==3.0.2
-django-filter==22.1
+django-extra-fields
+django-filter
 django-templated-mail==1.1.1
 djangorestframework==3.13.1
 djangorestframework-simplejwt==4.8.0
