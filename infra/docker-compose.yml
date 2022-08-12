@@ -32,7 +32,7 @@ services:
     image: nginx:1.19.3
     restart: always
     ports:
-      - "8001:8001"
+      - "80:80"
     volumes:
       - ./nginx/:/etc/nginx/conf.d/
       - ../frontend/build:/usr/share/nginx/html/
