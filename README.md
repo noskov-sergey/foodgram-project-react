@@ -66,8 +66,7 @@ http://your.hostname:port(if needs)
 
 ### Тестовые аккаунты:
 vpupkin@mts.ru admin12345
-```
+
 admin@admin.ru admin12345
-```
+
 synoskov@mail.ru admin12345
-```
