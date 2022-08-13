@@ -10,7 +10,7 @@ DEBUG = True
 
 #ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
-ALLOWED_HOSTS = ['62.84.122.169', '127.0.0.1', 'api', ]
+ALLOWED_HOSTS = ['62.84.122.169', '127.0.0.1', 'api', 'localhost', ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
