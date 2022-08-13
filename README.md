@@ -61,6 +61,9 @@ http://your.hostname:port(if needs)
 ### Автор проекта:
 [Носков Сергей](https://github.com/noskov-sergey)
 
+### Автор проекта:
+Сервер доступен по адресу http://62.84.122.169/
+
 ### Тестовые аккаунты:
 vpupkin@mts.ru admin12345
 ```
