@@ -8,9 +8,11 @@ SECRET_KEY = config('SECRET_KEY', default='1')
 
 DEBUG = True
 
-ALLOWED_HOSTS = config(
-    'ALLOWED_HOSTS', default='*', cast=Csv()
-)
+#ALLOWED_HOSTS = config(
+#    'ALLOWED_HOSTS', default='*', cast=Csv()
+#)
+
+ALLOWED_HOSTS = ['62.84.122.169', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -70,7 +72,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', default='postgres'),
         'USER': os.getenv('POSTGRES_USER', default='postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
-        'HOST': os.getenv('DB_HOST', default='12'),
+        'HOST': os.getenv('DB_HOST', default='db'),
         'PORT': os.getenv('DB_PORT', default='5432'),
     }
 }
