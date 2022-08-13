@@ -8,9 +8,7 @@ SECRET_KEY = config('SECRET_KEY', default='1')
 
 DEBUG = True
 
-#ALLOWED_HOSTS = config(
-#    'ALLOWED_HOSTS', default='*', cast=Csv()
-#)
+#ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 
 ALLOWED_HOSTS = ['62.84.122.169', 'localhost', '127.0.0.1']
 
