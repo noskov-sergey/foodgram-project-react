@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from reportlab.pdfbase import pdfmetrics
@@ -91,15 +92,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=['GET'],
         permission_classes=(IsAuthenticated,)
     )
-    @action(detail=False, methods=['get'],
-            permission_classes=[IsAuthenticated])
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         final_list = {}
         ingredients = Ingredients_Amount.objects.filter(
-            recipe__carts__user=request.user).values_list(
-            'ingredient__name', 'ingredient__measurement_unit',
-            'amount'
-        )
+            recipe__user_shopping_cart__user=request.user.id
+        ).values(
+            'ingredient__name',
+            'ingredient__measurement_unit'
+        ).annotate(amount=Sum('amount'))
         for item in ingredients:
             name = item[0]
             if name not in final_list:
