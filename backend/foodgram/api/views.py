@@ -93,7 +93,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=['GET'],
         permission_classes=(IsAuthenticated,)
     )
-    def canvas_method(dictionary):
+    def canvas_method(self, dictionary):
         """
         Метод сохранения списка покупок в формате PDF.
         """
