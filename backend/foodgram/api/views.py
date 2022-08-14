@@ -111,7 +111,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 final_list[name]['amount'] += item[2]
         pdfmetrics.registerFont(
             TTFont('Handicraft', 'data/Handicraft.ttf', 'UTF-8'))
-        response = HttpResponse(content_type='application/pdf')
+        response = HttpResponse(final_list, content_type='application/pdf')
         response['Content-Disposition'] = ('attachment; '
                                            'filename="shopping_list.pdf"')
         page = canvas.Canvas(response)
