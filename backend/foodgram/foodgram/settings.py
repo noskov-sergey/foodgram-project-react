@@ -6,7 +6,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = config('SECRET_KEY', default='1')
 
-DEBUG = True
+DEBUG = False
 
 #ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 

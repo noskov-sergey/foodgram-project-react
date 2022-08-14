@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from colorfield.fields import ColorField
 from users.models import FoodgramUser
@@ -56,6 +57,10 @@ class Recipe(models.Model):
     )
     cooking_time = models.IntegerField(
         'время приготовления в минутах',
+        validators=[MinValueValidator(
+            1,
+            message='Минимальное значение: 1 минута'
+        )],
     )
     created = models.DateTimeField(auto_now_add=True)
 

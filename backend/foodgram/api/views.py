@@ -103,7 +103,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 f' {ingredient["amount"]}'
                 f'({ingredient["ingredient__measurement_unit"]})'
             )
-        response = HttpResponse(shopping_cart, content_type='text')
+        response = HttpResponse(shopping_cart, content_type='application/pdf;')
         response['Content-Disposition'] = (
             'attachment;filename=shopping_cart.pdf'
         )
