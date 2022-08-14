@@ -136,5 +136,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
-        ).annotate(amount=Sum('amount'))
+        ).annotate(ingredient_total=Sum('amount'))
         return self.canvas_method(result)
