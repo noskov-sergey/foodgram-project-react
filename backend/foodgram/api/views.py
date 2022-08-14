@@ -127,14 +127,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         sheet.save()
         return response
 
-    def download_shopping_cart(self, request):
+    def download_shopping_cart(self, request, pk=None):
         """
         Метод создания списка покупок.
         """
-        result = Ingredients_Amount.objects.filter(
+        ingredients = Ingredients_Amount.objects.filter(
             recipe__shopping_cart__user=request.user.id
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
         ).annotate(ingredient_total=Sum('amount'))
-        return self.canvas_method(result)
+        return self.canvas_method(ingredients)
