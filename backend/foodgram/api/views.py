@@ -88,11 +88,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             pk
         )
 
-    @action(
-        detail=False,
-        methods=['GET'],
-        permission_classes=(IsAuthenticated,)
-    )
     def canvas_method(self, dictionary):
         """
         Метод сохранения списка покупок в формате PDF.
@@ -127,6 +122,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         sheet.save()
         return response
 
+    @action(
+        detail=False,
+        methods=['GET'],
+        permission_classes=(IsAuthenticated,)
+    )
     def download_shopping_cart(self, request, pk=None):
         """
         Метод создания списка покупок.
