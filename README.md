@@ -63,10 +63,3 @@ http://your.hostname:port(if needs)
 
 ### Сервер:
 Сервер доступен по адресу http://62.84.122.169/
-
-### Тестовые аккаунты:
-vpupkin@mts.ru admin12345
-
-admin@admin.ru admin12345
-
-synoskov@mail.ru admin12345
